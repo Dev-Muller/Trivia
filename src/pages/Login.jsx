@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { fetchToken } from '../services/fetchApi';
+import { fetchUserToken } from '../redux/actions';
 
-export default class Login extends Component {
+class Login extends Component {
   state = {
     nameUser: '',
     emailUser: '',
     disable: true,
+    tokenUser: '',
   };
 
   handleChange = ({ target }) => {
@@ -18,6 +23,17 @@ export default class Login extends Component {
     const regex = /^[\w-]+(.[\w-]+)*@([\w-]+.)+[a-zA-Z]{2,7}$/;
     const verifyEmail = emailUser.match(regex);
     this.setState({ disable: !(verifyName && verifyEmail) });
+  };
+
+  handleClick = async (event) => {
+    event.preventDefault();
+
+    const { dispatch, history } = this.props;
+    const { tokenUser } = this.state;
+    console.log(dispatch);
+    this.setState({ tokenUser: await fetchToken(tokenUser) });
+    dispatch(fetchUserToken(this.state));
+    history.push('/game');
   };
 
   render() {
@@ -59,3 +75,12 @@ export default class Login extends Component {
     );
   }
 }
+
+Login.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
+export default connect()(Login);
