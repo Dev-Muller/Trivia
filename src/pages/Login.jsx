@@ -28,11 +28,12 @@ class Login extends Component {
   handleClick = async (event) => {
     event.preventDefault();
 
-    const { dispatch } = this.props;
+    const { dispatch, history } = this.props;
     const { tokenUser } = this.state;
     console.log(dispatch);
     this.setState({ tokenUser: await fetchToken(tokenUser) });
     dispatch(fetchUserToken(this.state));
+    history.push('/game');
   };
 
   render() {
@@ -77,6 +78,9 @@ class Login extends Component {
 
 Login.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default connect()(Login);
