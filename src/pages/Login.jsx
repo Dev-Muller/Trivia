@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { fetchToken } from '../services/fetchApi';
 import { fetchUserToken } from '../redux/actions';
 
-export class Login extends Component {
+class Login extends Component {
   state = {
     nameUser: '',
     emailUser: '',
