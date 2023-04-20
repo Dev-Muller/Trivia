@@ -3,6 +3,7 @@ import { EMAIL, NAME } from '../actions';
 const INITIAL_STATE = {
   email: '',
   name: '',
+  token: null, // add 20abr
 };
 
 function userReducer(state = INITIAL_STATE, action) {

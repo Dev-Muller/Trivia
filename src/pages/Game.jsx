@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 class Game extends Component {
   state = {
-    results: JSON.parse(localStorage.getItem('results')),
+    results: JSON.parse(localStorage.getItem('results')), // usar componentDidMount
     currentIndex: 0,
   };
 

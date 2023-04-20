@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchQuestions } from '../services/fetchApi';
-import { fetchUserToken } from '../redux/actions';
+import { emailLogin, nameLogin } from '../redux/actions';
+import { fetchToken } from '../services/fetchApi';
+// import { fetchQuestions } from '../services/fetchApi';
+// import { fetchUserToken } from '../redux/actions';
 
 class Login extends Component {
   state = {
     nameUser: '',
     emailUser: '',
     disable: true,
-    tokenUser: '',
+    // tokenUser: '',
   };
 
   handleChange = ({ target }) => {
@@ -27,19 +29,22 @@ class Login extends Component {
 
   handleClick = async (event) => {
     event.preventDefault();
-
-    const { dispatch, history } = this.props;
-    await dispatch(fetchUserToken(this.state));
-    const token = await JSON.parse(localStorage.getItem('token'));
-    const results = await fetchQuestions(token);
-    await localStorage.setItem('results', JSON.stringify(results.results));
-
+    const { nameUser, emailUser } = this.state;
+    const { history, dispatch } = this.props;
+    dispatch(nameLogin(nameUser));
+    dispatch(emailLogin(emailUser));
+    // await dispatch(fetchUserToken(this.state));
+    // const token = await JSON.parse(localStorage.getItem('token'));
+    // const results = await fetchQuestions(token);
+    // await localStorage.setItem('results', JSON.stringify(results.results));
+    const userTokenResponse = await fetchToken();
+    localStorage.setItem('token', JSON.stringify(userTokenResponse));
     history.push('/game');
 
-    if (results.response_code !== 0) {
-      localStorage.clear();
-      history.push('/');
-    }
+    // if (results.response_code !== 0) {
+    //   localStorage.clear();
+    //   history.push('/');
+    // }
   };
 
   render() {
