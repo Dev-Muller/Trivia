@@ -1,4 +1,4 @@
-import { fetchToken } from '../../services/fetchApi';
+// import { fetchToken } from '../../services/fetchApi';
 
 // actions
 export const EMAIL = 'email';
@@ -20,9 +20,9 @@ export const tokenLogin = (payload) => ({
   payload,
 });
 
-export const fetchUserToken = (payload) => async (dispatch) => {
-  const userTokenResponse = await fetchToken();
-  localStorage.setItem('token', JSON.stringify(userTokenResponse));
-  const userToken = { ...payload, userTokenResponse };
-  dispatch(tokenLogin(userToken));
-};
+// export const fetchUserToken = () => async (dispatch) => {
+//   const userTokenResponse = await fetchToken();
+//   localStorage.setItem('token', JSON.stringify(userTokenResponse));
+//   // const userToken = { userTokenResponse };
+//   // dispatch(tokenLogin(userToken));
+// };
