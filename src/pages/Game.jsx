@@ -15,7 +15,7 @@ class Game extends Component {
 
   getQuestions = async () => {
     const { currentIndex } = this.state;
-    const { results } = await fetchQuestions(JSON.parse(localStorage.getItem('token')));
+    const { results } = await fetchQuestions(localStorage.getItem('token'));
 
     const currentQuestion = results[currentIndex];
 
