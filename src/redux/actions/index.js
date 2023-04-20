@@ -4,6 +4,7 @@
 export const EMAIL = 'email';
 export const NAME = 'name';
 export const TOKEN = 'token';
+export const QUESTIONS = 'questions';
 
 export const emailLogin = (payload) => ({
   type: EMAIL,
@@ -17,6 +18,11 @@ export const nameLogin = (payload) => ({
 
 export const tokenLogin = (payload) => ({
   type: TOKEN,
+  payload,
+});
+
+export const fetchQuestions = (payload) => ({
+  type: QUESTIONS,
   payload,
 });
 

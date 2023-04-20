@@ -1,16 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { fetchQuestions } from '../services/fetchApi';
 
 class Game extends Component {
   state = {
-    results: JSON.parse(localStorage.getItem('results')), // usar componentDidMount
+    // results: JSON.parse(localStorage.getItem('results')), // usar componentDidMount
     currentIndex: 0,
   };
 
+  componentDidMount() {
+    const results = fetchQuestions(JSON.parse(localStorage.getItem('token')));
+    console.log(results);
+  }
+
   randomArray = (array) => {
     // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-    let currentIndex = array.length; let
-      randomIndex;
+    let currentIndex = array.length;
+    let randomIndex;
 
     while (currentIndex !== 0) {
       randomIndex = Math.floor(Math.random() * currentIndex);
