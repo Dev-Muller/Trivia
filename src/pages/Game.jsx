@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { fetchQuestions } from '../services/fetchApi';
+import Header from '../components/Header';
 
 class Game extends Component {
   state = {
@@ -91,6 +92,7 @@ class Game extends Component {
 
     return (
       <div>
+        <Header />
         <h2 data-testid="question-category">
           {results[currentIndex]?.category}
         </h2>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { emailLogin, nameLogin } from '../redux/actions';
+import { emailLogin, nameLogin, tokenLogin } from '../redux/actions';
 import { fetchToken } from '../services/fetchApi';
 // import { fetchQuestions } from '../services/fetchApi';
 // import { fetchUserToken } from '../redux/actions';
@@ -38,6 +38,7 @@ class Login extends Component {
     // const results = await fetchQuestions(token);
     // await localStorage.setItem('results', JSON.stringify(results.results));
     const userTokenResponse = await fetchToken();
+    dispatch(tokenLogin(userTokenResponse));
     localStorage.setItem('token', userTokenResponse);
     history.push('/game');
 
