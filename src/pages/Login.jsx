@@ -38,7 +38,7 @@ class Login extends Component {
     // const results = await fetchQuestions(token);
     // await localStorage.setItem('results', JSON.stringify(results.results));
     const userTokenResponse = await fetchToken();
-    localStorage.setItem('token', JSON.stringify(userTokenResponse));
+    localStorage.setItem('token', userTokenResponse);
     history.push('/game');
 
     // if (results.response_code !== 0) {
