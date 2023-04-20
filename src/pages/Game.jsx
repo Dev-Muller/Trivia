@@ -11,12 +11,24 @@ class Game extends Component {
   };
 
   componentDidMount() {
-    this.getQuestions();
+    this.getResults();
   }
 
-  getQuestions = async () => {
+  getResults = async () => {
+    const response = await fetchQuestions(localStorage.getItem('token'));
+    console.log(response);
+    const { history } = this.props;
+
+    if (response.response_code !== 0) {
+      localStorage.removeItem('token');
+      history.push('/');
+    } else {
+      this.getQuestions(response.results);
+    }
+  };
+
+  getQuestions = async (results) => {
     const { currentIndex } = this.state;
-    const { results } = await fetchQuestions(localStorage.getItem('token'));
 
     const currentQuestion = results[currentIndex];
 
