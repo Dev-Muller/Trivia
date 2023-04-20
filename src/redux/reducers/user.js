@@ -1,9 +1,10 @@
-import { EMAIL, NAME } from '../actions';
+import { EMAIL, NAME, TOKEN, SCORE } from '../actions';
 
 const INITIAL_STATE = {
   email: '',
   name: '',
   token: null, // add 20abr
+  score: 0,
 };
 
 function userReducer(state = INITIAL_STATE, action) {
@@ -18,6 +19,16 @@ function userReducer(state = INITIAL_STATE, action) {
     return {
       ...state,
       name: payload,
+    };
+  case TOKEN:
+    return {
+      ...state,
+      token: payload,
+    };
+  case SCORE:
+    return {
+      ...state,
+      score: payload,
     };
   default:
     return state;

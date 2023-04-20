@@ -11,7 +11,7 @@ class Header extends Component {
     return (
       <header>
         <img src={ gravatarUrl } alt="Profile" data-testid="header-profile-picture" />
-        <h4 data-testid="header-user-name">{name}</h4>
+        <h4 data-testid="header-player-name">{name}</h4>
         <h4>{email}</h4>
         {token && (
           <p data-testid="header-score">
