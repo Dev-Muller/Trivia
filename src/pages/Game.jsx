@@ -8,10 +8,12 @@ class Game extends Component {
     results: [],
     currentIndex: 0,
     clickedAnswer: null,
+    timer: 30,
   };
 
   componentDidMount() {
     this.getResults();
+    this.decrementTimer();
   }
 
   getResults = async () => {
@@ -46,9 +48,17 @@ class Game extends Component {
     this.setState({ clickedAnswer: index });
   };
 
+  decrementTimer = () => {
+    const interval = 1000;
+    setInterval(() => {
+      this.setState((prevstate) => ({ timer: prevstate.timer - 1 }));
+    }, interval);
+  };
+
   render() {
-    const { results, currentIndex, clickedAnswer } = this.state;
+    const { results, currentIndex, clickedAnswer, timer } = this.state;
     const currentQuestion = results[currentIndex];
+    console.log(timer);
 
     if (currentQuestion) {
       const allAnswers = [
