@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchToken } from '../services/fetchApi';
+import { fetchQuestions } from '../services/fetchApi';
 import { fetchUserToken } from '../redux/actions';
 
 class Login extends Component {
@@ -29,11 +29,17 @@ class Login extends Component {
     event.preventDefault();
 
     const { dispatch, history } = this.props;
-    const { tokenUser } = this.state;
-    console.log(dispatch);
-    this.setState({ tokenUser: await fetchToken(tokenUser) });
-    dispatch(fetchUserToken(this.state));
+    await dispatch(fetchUserToken(this.state));
+    const token = await JSON.parse(localStorage.getItem('token'));
+    const results = await fetchQuestions(token);
+    await localStorage.setItem('results', JSON.stringify(results.results));
+
     history.push('/game');
+
+    if (results.response_code !== 0) {
+      localStorage.clear();
+      history.push('/');
+    }
   };
 
   render() {

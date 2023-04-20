@@ -22,7 +22,7 @@ export const tokenLogin = (payload) => ({
 
 export const fetchUserToken = (payload) => async (dispatch) => {
   const userTokenResponse = await fetchToken();
-  localStorage.setItem('token', userTokenResponse);
+  localStorage.setItem('token', JSON.stringify(userTokenResponse));
   const userToken = { ...payload, userTokenResponse };
   dispatch(tokenLogin(userToken));
 };
