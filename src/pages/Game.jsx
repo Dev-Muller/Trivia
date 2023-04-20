@@ -9,11 +9,14 @@ class Game extends Component {
     currentIndex: 0,
     clickedAnswer: null,
     timer: 30,
+    shuffledAnswers: [],
+    // userCorrectAnswers: 0,
+    userIncorrectAnswers: 0,
   };
 
   componentDidMount() {
     this.getResults();
-    this.decrementTimer();
+    this.startTimer();
   }
 
   getResults = async () => {
@@ -24,7 +27,26 @@ class Game extends Component {
       localStorage.removeItem('token');
       history.push('/');
     } else {
-      this.setState({ results: response.results });
+      this.setState({ results: response.results }, () => {
+        this.shuffleAnswers();
+      });
+    }
+  };
+
+  shuffleAnswers = () => {
+    const { results, currentIndex } = this.state;
+    const currentQuestion = results[currentIndex];
+
+    if (currentQuestion) {
+      const allAnswers = [
+        { answer: currentQuestion.correct_answer, correct: true },
+        ...currentQuestion.incorrect_answers.map((answer) => ({
+          answer,
+          correct: false,
+        })),
+      ];
+
+      this.setState({ shuffledAnswers: this.randomArray(allAnswers) });
     }
   };
 
@@ -48,30 +70,25 @@ class Game extends Component {
     this.setState({ clickedAnswer: index });
   };
 
-  decrementTimer = () => {
-    const interval = 1000;
-    setInterval(() => {
-      this.setState((prevstate) => ({ timer: prevstate.timer - 1 }));
-    }, interval);
+  startTimer = () => {
+    const ONE_SECOND_INTERVAL = 1000;
+    const timerInterval = setInterval(() => {
+      this.setState((prevState) => {
+        if (prevState.timer === 0) {
+          clearInterval(timerInterval);
+          return { timer: 0, userIncorrectAnswers: prevState.userIncorrectAnswers + 1 };
+        }
+        return { timer: prevState.timer - 1 };
+      });
+    }, ONE_SECOND_INTERVAL);
   };
 
   render() {
-    const { results, currentIndex, clickedAnswer, timer } = this.state;
+    const { results, currentIndex, clickedAnswer, timer, shuffledAnswers } = this.state;
     const currentQuestion = results[currentIndex];
-    console.log(timer);
 
     if (currentQuestion) {
-      const allAnswers = [
-        { answer: currentQuestion.correct_answer, correct: true },
-        ...currentQuestion.incorrect_answers.map((answer) => ({
-          answer,
-          correct: false,
-        })),
-      ];
-
-      this.randomArray(allAnswers);
-
-      const mapAnswers = allAnswers.map((answerObj, index) => {
+      const mapAnswers = shuffledAnswers.map((answerObj, index) => {
         let borderColor;
 
         if (clickedAnswer !== null) {
@@ -86,6 +103,7 @@ class Game extends Component {
           <button
             onClick={ () => this.handleClickedAnwers(index) }
             key={ index }
+            disabled={ timer === 0 }
             data-testid={
               answerObj.correct
                 ? 'correct-answer'
@@ -108,6 +126,7 @@ class Game extends Component {
             {results[currentIndex]?.question}
           </p>
           <div data-testid="answer-options">{mapAnswers}</div>
+          <p>{timer}</p>
         </div>
       );
     }
