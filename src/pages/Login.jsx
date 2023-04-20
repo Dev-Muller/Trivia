@@ -32,7 +32,7 @@ class Login extends Component {
     await dispatch(fetchUserToken(this.state));
     const token = await JSON.parse(localStorage.getItem('token'));
     const results = await fetchQuestions(token);
-    await localStorage.setItem('results', JSON.stringify(results));
+    await localStorage.setItem('results', JSON.stringify(results.results));
 
     history.push('/game');
 

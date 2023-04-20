@@ -1,14 +1,68 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { fetchQuestions } from '../services/fetchApi';
 
 class Game extends Component {
+  state = {
+    results: JSON.parse(localStorage.getItem('results')),
+    currentIndex: 0,
+  };
+
+  randomArray = (array) => {
+    // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+    let currentIndex = array.length; let
+      randomIndex;
+
+    while (currentIndex !== 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+  };
+
   render() {
-    const { results } = JSON.parse(localStorage.getItem('results'));
-    console.log(results);
+    const { results, currentIndex } = this.state;
+
+    const currentQuestion = results[currentIndex];
+
+    const allAnswers = [
+      { answer: currentQuestion.correct_answer, correct: true },
+      ...currentQuestion.incorrect_answers.map((answer) => ({
+        answer,
+        correct: false,
+      })),
+    ];
+
+    this.randomArray(allAnswers);
+
+    const mapAnswers = allAnswers.map((answerObj, index) => (
+      <button
+        key={ index }
+        data-testid={
+          answerObj.correct
+            ? 'correct-answer'
+            : `wrong-answer-${index}`
+        }
+      >
+        {answerObj.answer}
+      </button>
+    ));
 
     return (
-      <div />
+      <div>
+        <h2 data-testid="question-category">
+          {currentQuestion.category}
+        </h2>
+        <p data-testid="question-text">
+          {currentQuestion.question}
+        </p>
+        <div data-testid="answer-options">
+          {mapAnswers}
+        </div>
+      </div>
     );
   }
 }
