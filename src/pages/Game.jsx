@@ -109,6 +109,27 @@ class Game extends Component {
     }, ONE_SECOND_INTERVAL);
   };
 
+  nextQuestion = () => {
+    const { currentIndex, results } = this.state;
+    this.setState(
+      (prevState) => ({
+        currentIndex: prevState.currentIndex + 1,
+        clickedAnswer: null,
+        timer: 30,
+        nextButton: false,
+      }),
+      () => {
+        if (currentIndex === results.length - 1) {
+          const { history } = this.props;
+          history.push('/feedback');
+        } else {
+          this.shuffleAnswers();
+          this.startTimer();
+        }
+      },
+    );
+  };
+
   render() {
     const {
       results,
@@ -160,7 +181,8 @@ class Game extends Component {
             {results[currentIndex]?.question}
           </p>
           <div data-testid="answer-options">{mapAnswers}</div>
-          {nextButton && <button data-testid="btn-next">Next</button>}
+          {nextButton
+          && <button data-testid="btn-next" onClick={ this.nextQuestion }>Next</button>}
           <p>{timer}</p>
         </div>
       );
