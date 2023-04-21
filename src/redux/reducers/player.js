@@ -5,6 +5,8 @@ const INITIAL_STATE = {
   name: '',
   token: null, // add 20abr
   score: 0,
+  correctAnswers: 0,
+  incorrectAnswers: 0,
 };
 
 function userReducer(state = INITIAL_STATE, action) {
@@ -25,11 +27,15 @@ function userReducer(state = INITIAL_STATE, action) {
       ...state,
       token: payload,
     };
-  case SCORE:
+  case SCORE: {
+    const { points, isCorrect } = payload;
     return {
       ...state,
-      score: state.score + payload,
+      score: state.score + points,
+      correctAnswers: isCorrect ? state.correctAnswers + 1 : state.correctAnswers,
+      incorrectAnswers: !isCorrect ? state.incorrectAnswers + 1 : state.incorrectAnswers,
     };
+  }
   default:
     return state;
   }
