@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   email: '',
   name: '',
   token: null, // add 20abr
+  assertions: '',
   score: 0,
 };
 

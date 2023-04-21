@@ -15,8 +15,6 @@ class Header extends Component {
         <h4>{email}</h4>
         {token && (
           <p data-testid="header-score">
-            Score:
-            {' '}
             {score}
           </p>
         )}
