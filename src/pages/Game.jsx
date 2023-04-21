@@ -90,7 +90,8 @@ class Game extends Component {
 
     if (answerObj.correct) {
       const points = BASE_POINTS + timer * difficulty[currentQuestion.difficulty];
-      dispatch(updateScore(points));
+      const isCorrect = true;
+      dispatch(updateScore({ points, isCorrect }));
     }
 
     this.setState({ clickedAnswer: index, nextButton: true });
