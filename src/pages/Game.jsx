@@ -12,7 +12,7 @@ class Game extends Component {
     clickedAnswer: null,
     timer: 30,
     shuffledAnswers: [],
-    // userCorrectAnswers: 0,
+    userCorrectAnswers: 0,
     userIncorrectAnswers: 0,
     nextButton: false,
   };
@@ -75,7 +75,14 @@ class Game extends Component {
   };
 
   handleClickedAnwers = (index) => {
-    const { shuffledAnswers, timer, currentIndex, results } = this.state;
+    const {
+      shuffledAnswers,
+      timer,
+      currentIndex,
+      results,
+      userCorrectAnswers,
+      userIncorrectAnswers,
+    } = this.state;
     const { dispatch } = this.props;
     const answerObj = shuffledAnswers[index];
     const difficulty = {
@@ -90,7 +97,17 @@ class Game extends Component {
 
     if (answerObj.correct) {
       const points = BASE_POINTS + timer * difficulty[currentQuestion.difficulty];
-      dispatch(updateScore(points));
+      this.setState({
+        userCorrectAnswers: userCorrectAnswers + 1,
+        nextButton: true,
+      });
+      dispatch(updateScore({ points, isCorrect: true }));
+    } else {
+      this.setState({
+        userIncorrectAnswers: userIncorrectAnswers + 1,
+        nextButton: true,
+      });
+      dispatch(updateScore({ points: 0, isCorrect: false }));
     }
 
     this.setState({ clickedAnswer: index, nextButton: true });
@@ -98,6 +115,11 @@ class Game extends Component {
 
   startTimer = () => {
     const ONE_SECOND_INTERVAL = 1000;
+
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+
     this.timerInterval = setInterval(() => {
       this.setState((prevState) => {
         if (prevState.timer === 0) {
