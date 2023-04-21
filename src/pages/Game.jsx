@@ -22,6 +22,10 @@ class Game extends Component {
     this.startTimer();
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timerInterval);
+  }
+
   getResults = async () => {
     const response = await fetchQuestions(localStorage.getItem('token'));
     const { history } = this.props;
@@ -94,10 +98,10 @@ class Game extends Component {
 
   startTimer = () => {
     const ONE_SECOND_INTERVAL = 1000;
-    const timerInterval = setInterval(() => {
+    this.timerInterval = setInterval(() => {
       this.setState((prevState) => {
         if (prevState.timer === 0) {
-          clearInterval(timerInterval);
+          clearInterval(this.timerInterval);
           return {
             timer: 0,
             userIncorrectAnswers: prevState.userIncorrectAnswers + 1,
