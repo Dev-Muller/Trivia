@@ -22,7 +22,7 @@ export const tokenLogin = (payload) => ({
   payload,
 });
 
-export const scoreHeader = (payload) => ({
+export const updateScore = (payload) => ({
   type: SCORE,
   payload,
 });

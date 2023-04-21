@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { fetchQuestions } from '../services/fetchApi';
 import Header from '../components/Header';
+import { updateScore } from '../redux/actions';
 
 class Game extends Component {
   state = {
     results: [],
-    currentIndex: 0,
+    currentIndex: 1,
     clickedAnswer: null,
     timer: 30,
     shuffledAnswers: [],
     // userCorrectAnswers: 0,
     userIncorrectAnswers: 0,
+    nextButton: false,
   };
 
   componentDidMount() {
@@ -22,6 +25,7 @@ class Game extends Component {
   getResults = async () => {
     const response = await fetchQuestions(localStorage.getItem('token'));
     const { history } = this.props;
+    console.log(response);
 
     if (response.response_code !== 0) {
       localStorage.removeItem('token');
@@ -67,7 +71,25 @@ class Game extends Component {
   };
 
   handleClickedAnwers = (index) => {
-    this.setState({ clickedAnswer: index });
+    const { shuffledAnswers, timer, currentIndex, results } = this.state;
+    const { dispatch } = this.props;
+    const answerObj = shuffledAnswers[index];
+    const difficulty = {
+      easy: 1,
+      medium: 2,
+      hard: 3,
+    };
+
+    const currentQuestion = results[currentIndex];
+
+    const BASE_POINTS = 10;
+
+    if (answerObj.correct) {
+      const points = BASE_POINTS + timer * difficulty[currentQuestion.difficulty];
+      dispatch(updateScore(points));
+    }
+
+    this.setState({ clickedAnswer: index, nextButton: true });
   };
 
   startTimer = () => {
@@ -76,7 +98,11 @@ class Game extends Component {
       this.setState((prevState) => {
         if (prevState.timer === 0) {
           clearInterval(timerInterval);
-          return { timer: 0, userIncorrectAnswers: prevState.userIncorrectAnswers + 1 };
+          return {
+            timer: 0,
+            userIncorrectAnswers: prevState.userIncorrectAnswers + 1,
+            nextButton: true,
+          };
         }
         return { timer: prevState.timer - 1 };
       });
@@ -84,7 +110,15 @@ class Game extends Component {
   };
 
   render() {
-    const { results, currentIndex, clickedAnswer, timer, shuffledAnswers } = this.state;
+    const {
+      results,
+      currentIndex,
+      clickedAnswer,
+      timer,
+      shuffledAnswers,
+      nextButton,
+    } = this.state;
+
     const currentQuestion = results[currentIndex];
 
     if (currentQuestion) {
@@ -126,6 +160,7 @@ class Game extends Component {
             {results[currentIndex]?.question}
           </p>
           <div data-testid="answer-options">{mapAnswers}</div>
+          {nextButton && <button data-testid="btn-next">Next</button>}
           <p>{timer}</p>
         </div>
       );
@@ -139,10 +174,15 @@ class Game extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  score: state.player.score,
+});
+
 Game.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
-export default Game;
+export default connect(mapStateToProps)(Game);
