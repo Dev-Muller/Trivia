@@ -113,9 +113,6 @@ class Game extends Component {
     this.setState({ clickedAnswer: index, nextButton: true });
   };
 
-    this.setState({ clickedAnswer: index, nextButton: true });
-  };
-
   startTimer = () => {
     const ONE_SECOND_INTERVAL = 1000;
 
