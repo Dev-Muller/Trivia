@@ -31,21 +31,15 @@ class Login extends Component {
     event.preventDefault();
     const { nameUser, emailUser } = this.state;
     const { history, dispatch } = this.props;
+
     dispatch(nameLogin(nameUser));
     dispatch(emailLogin(emailUser));
-    // await dispatch(fetchUserToken(this.state));
-    // const token = await JSON.parse(localStorage.getItem('token'));
-    // const results = await fetchQuestions(token);
-    // await localStorage.setItem('results', JSON.stringify(results.results));
+
     const userTokenResponse = await fetchToken();
+
     dispatch(tokenLogin(userTokenResponse));
     localStorage.setItem('token', userTokenResponse);
     history.push('/game');
-
-    // if (results.response_code !== 0) {
-    //   localStorage.clear();
-    //   history.push('/');
-    // }
   };
 
   render() {

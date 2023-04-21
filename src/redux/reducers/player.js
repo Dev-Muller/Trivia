@@ -28,7 +28,7 @@ function userReducer(state = INITIAL_STATE, action) {
   case SCORE:
     return {
       ...state,
-      score: payload,
+      score: state.score + payload,
     };
   default:
     return state;
