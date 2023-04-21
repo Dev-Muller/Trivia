@@ -8,7 +8,7 @@ import { updateScore } from '../redux/actions';
 class Game extends Component {
   state = {
     results: [],
-    currentIndex: 1,
+    currentIndex: 0,
     clickedAnswer: null,
     timer: 30,
     shuffledAnswers: [],
