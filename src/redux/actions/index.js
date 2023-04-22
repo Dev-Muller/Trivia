@@ -1,11 +1,10 @@
-// import { fetchToken } from '../../services/fetchApi';
-
 // actions
 export const EMAIL = 'email';
 export const NAME = 'name';
 export const TOKEN = 'token';
 export const QUESTIONS = 'questions';
 export const SCORE = 'score';
+export const RANKING = 'ranking';
 
 export const emailLogin = (payload) => ({
   type: EMAIL,
@@ -32,9 +31,7 @@ export const fetchQuestions = (payload) => ({
   payload,
 });
 
-// export const fetchUserToken = () => async (dispatch) => {
-//   const userTokenResponse = await fetchToken();
-//   localStorage.setItem('token', JSON.stringify(userTokenResponse));
-//   // const userToken = { userTokenResponse };
-//   // dispatch(tokenLogin(userToken));
-// };
+export const updateRanking = (payload) => ({
+  type: RANKING,
+  payload,
+});

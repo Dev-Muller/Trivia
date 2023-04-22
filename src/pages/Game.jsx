@@ -29,7 +29,6 @@ class Game extends Component {
   getResults = async () => {
     const response = await fetchQuestions(localStorage.getItem('token'));
     const { history } = this.props;
-    console.log(response);
 
     if (response.response_code !== 0) {
       localStorage.removeItem('token');
