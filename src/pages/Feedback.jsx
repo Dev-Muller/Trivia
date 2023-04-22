@@ -31,7 +31,8 @@ class Feedback extends Component {
   };
 
   render() {
-    const { assertions, history } = this.props;
+    const { history, player } = this.props;
+    const { score, assertions } = player;
 
     const minAnswers = 3;
 
@@ -46,6 +47,8 @@ class Feedback extends Component {
     return (
       <>
         <Header />
+        <div data-testid="feedback-total-question">{ assertions }</div>
+        <div data-testid="feedback-total-score">{ score }</div>
         <div
           data-testid="feedback-text"
         >
@@ -70,12 +73,14 @@ class Feedback extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  assertions: state.player.assertions,
+  // assertions: state.player.assertions,
+  // score: state.player.score,
   player: state.player,
 });
 
 Feedback.propTypes = {
-  assertions: PropTypes.number.isRequired,
+  // assertions: PropTypes.number.isRequired,
+  // score: PropTypes.number.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
