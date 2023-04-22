@@ -1,4 +1,4 @@
-import { EMAIL, NAME, TOKEN, SCORE } from '../actions';
+import { EMAIL, NAME, TOKEN, SCORE, RESET } from '../actions';
 
 const INITIAL_STATE = {
   email: '',
@@ -36,6 +36,10 @@ function userReducer(state = INITIAL_STATE, action) {
       incorrectAnswers: !isCorrect ? state.incorrectAnswers + 1 : state.incorrectAnswers,
     };
   }
+
+  case RESET:
+    return INITIAL_STATE;
+
   default:
     return state;
   }
