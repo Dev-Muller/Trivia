@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
-import { updateRanking } from '../redux/actions';
+import { updateRanking, resetState } from '../redux/actions';
 
 class Feedback extends Component {
   componentDidMount() {
@@ -23,6 +23,12 @@ class Feedback extends Component {
 
     localStorage.setItem('ranking', JSON.stringify(updatedRanking));
   }
+
+  restartGame = () => {
+    const { history, dispatch } = this.props;
+    history.push('/');
+    dispatch(resetState());
+  };
 
   render() {
     const { assertions, history } = this.props;
@@ -47,7 +53,7 @@ class Feedback extends Component {
         </div>
         <button
           data-testid="btn-play-again"
-          onClick={ () => history.push('/') }
+          onClick={ this.restartGame }
         >
           Play again
 

@@ -4,6 +4,7 @@ export const NAME = 'name';
 export const TOKEN = 'token';
 export const QUESTIONS = 'questions';
 export const SCORE = 'score';
+export const RESET = 'reset';
 export const RANKING = 'ranking';
 
 export const emailLogin = (payload) => ({
@@ -34,4 +35,8 @@ export const fetchQuestions = (payload) => ({
 export const updateRanking = (payload) => ({
   type: RANKING,
   payload,
+});
+
+export const resetState = () => ({
+  type: RESET,
 });
