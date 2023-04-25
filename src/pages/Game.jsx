@@ -208,7 +208,7 @@ class Game extends Component {
           <div data-testid="answer-options">{mapAnswers}</div>
           {nextButton
           && <button data-testid="btn-next" onClick={ this.nextQuestion }>Next</button>}
-          <p>{timer}</p>
+          <p data-testid="question-timer">{timer}</p>
         </div>
       );
     }

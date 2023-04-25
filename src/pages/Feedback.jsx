@@ -9,7 +9,8 @@ class Feedback extends Component {
     const { player, dispatch } = this.props;
     dispatch(updateRanking(player));
 
-    const existingRanking = JSON.parse(localStorage.getItem('ranking')) || [];
+    const existingRanking = localStorage.getItem('ranking')
+      ? JSON.parse(localStorage.getItem('ranking')) : [];
 
     const updatedPlayer = {
       index: existingRanking.length,

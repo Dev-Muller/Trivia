@@ -9,7 +9,7 @@ class RankingCard extends Component {
     const gravatarUrl = `https://www.gravatar.com/avatar/${hash}`;
 
     return (
-      <div>
+      <div data-testid="ranking-card">
         <img src={ gravatarUrl } alt="Player" />
         <p data-testid={ `player-name-${index}` }>{name}</p>
         <p data-testid={ `player-score-${index}` }>{score}</p>

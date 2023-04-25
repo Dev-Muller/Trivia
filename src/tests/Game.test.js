@@ -1,71 +1,220 @@
 import { screen, waitFor } from '@testing-library/react';
-// import userEvent from '@testing-library/user-event';
-// import { act } from 'react-dom/test-utils';
+import userEvent from '@testing-library/user-event';
+import { act } from 'react-dom/test-utils';
 import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
 import App from '../App';
+import { questionsResponse, invalidTokenQuestionsResponse } from '../../cypress/mocks/questions';
+
 
 describe('Testar pagina de game', () => {
-  it('Testa se os botoes, pergunta, header e qual categoria estao presentes', () => {
-    const initialState = {
-      email: '',
-      name: '',
+  it('Testa se os botoes, pergunta, header e qual categoria estao presentes', async () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: () => Promise.resolve(
+        questionsResponse,
+      ),
+    });
+    const initialEntries = '/game';
+    const initialState = { 
+      player: {
+        token: '53a7f58e97fbd0ca9c2f9c74d3a2896ddef50657af7061519cf86c50f7cf4a2b',
+        name: 'asd',
+        email: 'asd@email.com',
+        score: 0,
+      },
     }
-    const { history } = renderWithRouterAndRedux(<App />, initialState, '/game');
 
-    expect(history.location.pathname).toBe('/game');
+    renderWithRouterAndRedux(<App />, initialState, initialEntries);
 
-    // const email = screen.getByTestId('input-gravatar-email');
-    // const name = screen.getByTestId('input-player-name');
-    const typeQuestion = screen.getByTestId('question-category');
+    const typeQuestion = await screen.findByTestId('question-category');
     const questionText = screen.getByTestId('question-text');
-    const questionOptions = screen.getByTestId('answer-options');
+    const teste = await screen.findAllByTestId(/-answer/);
+    const score = screen.getByTestId('header-score');
 
     expect(typeQuestion).toBeInTheDocument();
     expect(questionText).toBeInTheDocument();
-    expect(questionOptions.length).toBe(4);
-    // expect(configBtn).toBeInTheDocument();
+    await waitFor(() => {
+      // console.log(questionOptions);
+    });
+    expect(teste.length).toBeGreaterThanOrEqual(2);
+    // expect(questionOptions.length).toBe(4);
+    expect(score).toBeInTheDocument();
   });
+  it('Testa se o token invalido volta para a Home', async () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: () => Promise.resolve(
+        invalidTokenQuestionsResponse,
+      ),
+    });
+    const initialEntries = '/game';
+    const initialState = { 
+      player: {
+        token: '53a7f58e97fbd0ca9c2f9c74d3a2896ddef50657af7061519cf86c50f7cf4a2b',
+        name: 'asd',
+        email: 'asd@email.com',
+        score: 0,
+      },
+    }
 
-  // it('Testa se apos preencher os inputs e clicar no botao de play leva ao jogo', async () => {
-  //   const { history } = renderWithRouterAndRedux(<App />);
+  const { history } = renderWithRouterAndRedux(<App />, initialState, initialEntries);
+  
+  await waitFor(() => {
+    expect(history.location.pathname).toBe('/');
+  });
+  });
+  it('Testa se o score muda acertando uma questão', async () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: () => Promise.resolve(
+        questionsResponse,
+      ),
+    });
+    const initialEntries = '/game';
+    const initialState = { 
+      player: {
+        token: '53a7f58e97fbd0ca9c2f9c74d3a2896ddef50657af7061519cf86c50f7cf4a2b',
+        name: 'asd',
+        email: 'asd@email.com',
+        score: 0,
+        assertions: 0,
+        incorrectAnswers: 0,
+      },
+    }
 
-  //   expect(history.location.pathname).toBe('/');
+    renderWithRouterAndRedux(<App />, initialState, initialEntries);
 
-  //   const email = screen.getByTestId('input-gravatar-email');
-  //   const name = screen.getByTestId('input-player-name');
-  //   const playBtn = screen.getByTestId('btn-play');
+    const correctAwnser = await screen.findByTestId(/correct-answer/);
 
-  //   userEvent.type(email, 'email@email.com');
-  //   userEvent.type(name, 'MeuNome');
+    const score = screen.getByTestId('header-score');
 
-  //   act(() => {
-  //     userEvent.click(playBtn);
-  //   });
+    act(() => {
+      userEvent.click(correctAwnser);
+    });
+    
+    await waitFor(() => {
+      // expect(player.assertions).toBe(1);
+      expect(score.innerHTML).toBe("40");
+    }, {timeout: 0});
 
-  //   await waitFor(() => {
-  //     expect(history.location.pathname).toBe('/game');
-  //   });
-  // });
-  // it('Testa se apos preencher os inputs e clicar no botao config leva as configuraçoes', () => {
-  //   const { history } = renderWithRouterAndRedux(<App />);
+    const wrongAwnser = screen.queryByTestId(/wrong-answer-/);
 
-  //   expect(history.location.pathname).toBe('/');
+    await waitFor(() => {
+      expect(correctAwnser).toHaveStyle("border: 3px solid rgb(6, 240, 15)");
+      expect(wrongAwnser).toHaveStyle("border: 3px solid red");
+    }, {timeout: 1000});
+  });
+  it('Testa se o apos apertar o botao de proxima questao reseta o timer e renderiza proxima questao', async () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: () => Promise.resolve(
+        questionsResponse,
+      ),
+    });
+    const initialEntries = '/game';
+    const initialState = { 
+      player: {
+        token: '53a7f58e97fbd0ca9c2f9c74d3a2896ddef50657af7061519cf86c50f7cf4a2b',
+        name: 'asd',
+        email: 'asd@email.com',
+        score: 0,
+        assertions: 0,
+        incorrectAnswers: 0,
+      },
+    }
 
-  //   const email = screen.getByTestId('input-gravatar-email');
-  //   const name = screen.getByTestId('input-player-name');
-  //   const configBtn = screen.getByTestId('btn-settings');
+    renderWithRouterAndRedux(<App />, initialState, initialEntries);
 
-  //   userEvent.type(email, 'email@email.com');
-  //   userEvent.type(name, 'MeuNome');
+    const wrongAwnser = await screen.findByTestId(/wrong-answer/);
 
-  //   act(() => {
-  //     userEvent.click(configBtn);
-  //   });
+    act(() => {
+      userEvent.click(wrongAwnser);
+    });
+    
+    const nextBtn = screen.getByTestId('btn-next');
 
-  //   expect(history.location.pathname).toBe('/config');
+    act(() => {
+      userEvent.click(nextBtn);
+    });
 
-  //   const settingsTitle = screen.getByTestId('settings-title');
+    const timer = screen.getByTestId('question-timer');
 
-  //   expect(settingsTitle).toBeInTheDocument();
-  // });
+    await waitFor(() => {
+      expect(timer.innerHTML).toBe("30");
+    }, {timeout: 0});
+  });
+  it('Testa se o apos acabar as questoes vai para a página de feedback', async () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: () => Promise.resolve(
+        questionsResponse,
+      ),
+    });
+    const initialEntries = '/game';
+    const initialState = { 
+      player: {
+        token: '53a7f58e97fbd0ca9c2f9c74d3a2896ddef50657af7061519cf86c50f7cf4a2b',
+        name: 'asd',
+        email: 'asd@email.com',
+        score: 0,
+        assertions: 0,
+        incorrectAnswers: 0,
+      },
+    }
+
+    const { history } = renderWithRouterAndRedux(<App />, initialState, initialEntries);
+
+    // primeira questao
+    userEvent.click(await screen.findByTestId(/correct-answer/));
+    userEvent.click(await screen.findByTestId('btn-next'));
+
+    // segunda questao
+    userEvent.click(await screen.findByTestId(/correct-answer/));
+    userEvent.click(await screen.findByTestId('btn-next'));
+
+
+    // terceira questao
+    userEvent.click(await screen.findByTestId(/correct-answer/));
+    userEvent.click(await screen.findByTestId('btn-next'));
+
+
+    // quarta questao
+    userEvent.click(await screen.findByTestId(/correct-answer/));
+    userEvent.click(await screen.findByTestId('btn-next'));
+
+    // quinta quetao
+    userEvent.click(await screen.findByTestId(/correct-answer/));
+    userEvent.click(await screen.findByTestId('btn-next'));
+
+
+    await screen.findByText('Ranking')
+    expect(history.location.pathname).toBe('/feedback')
+
+  });
+  
+  jest.setTimeout(32000)
+  it('Testa se o apos apertar o botao de proxima questao reseta o timer e renderiza proxima questao', async () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: () => Promise.resolve(
+        questionsResponse,
+      ),
+    });
+    const initialEntries = '/game';
+    const initialState = { 
+      player: {
+        token: '53a7f58e97fbd0ca9c2f9c74d3a2896ddef50657af7061519cf86c50f7cf4a2b',
+        name: 'asd',
+        email: 'asd@email.com',
+        score: 0,
+        assertions: 0,
+        incorrectAnswers: 0,
+      },
+    }
+
+    renderWithRouterAndRedux(<App />, initialState, initialEntries);
+    
+    const timer = await screen.findByTestId('question-timer');
+    
+    await waitFor(() => {
+      expect(timer.innerHTML).toBe('0');
+    }, {timeout: 32000})
+
+    const nextBtn = await screen.findByTestId('btn-next');
+    expect(nextBtn).toBeInTheDocument();
+  });
 });
