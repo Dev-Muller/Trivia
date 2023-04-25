@@ -5,8 +5,16 @@ import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
 import App from '../App';
 
 describe('Testar pagina de login', () => {
+  const initialEntries = '/';
+  const initialState = { 
+    player: {
+      token: '',
+      name: '',
+      email: '',
+    },
+  }
   it('Testa se os inputs e botao estao presentes', () => {
-    const { history } = renderWithRouterAndRedux(<App />);
+    const { history } = renderWithRouterAndRedux(<App />, initialState, initialEntries);
 
     expect(history.location.pathname).toBe('/');
 
@@ -22,9 +30,11 @@ describe('Testar pagina de login', () => {
   });
 
   it('Testa se apos preencher os inputs e clicar no botao de play leva ao jogo', async () => {
-    const { history } = renderWithRouterAndRedux(<App />);
+    const { history } = renderWithRouterAndRedux(<App />, initialState, initialEntries);
 
-    expect(history.location.pathname).toBe('/');
+    await waitFor(() => {
+      expect(history.location.pathname).toBe('/');
+    });
 
     const email = screen.getByTestId('input-gravatar-email');
     const name = screen.getByTestId('input-player-name');
@@ -42,7 +52,7 @@ describe('Testar pagina de login', () => {
     });
   });
   it('Testa se apos preencher os inputs e clicar no botao config leva as configuraçoes', () => {
-    const { history } = renderWithRouterAndRedux(<App />);
+    const { history } = renderWithRouterAndRedux(<App />, initialState, initialEntries);
 
     expect(history.location.pathname).toBe('/');
 

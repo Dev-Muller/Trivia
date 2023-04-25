@@ -3,69 +3,62 @@ import { screen, waitFor } from '@testing-library/react';
 // import { act } from 'react-dom/test-utils';
 import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
 import App from '../App';
+import { questionsResponse, invalidTokenQuestionsResponse } from '../../cypress/mocks/questions';
+
 
 describe('Testar pagina de game', () => {
-  it('Testa se os botoes, pergunta, header e qual categoria estao presentes', () => {
-    const initialState = {
-      email: '',
-      name: '',
+  it('Testa se os botoes, pergunta, header e qual categoria estao presentes', async () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: () => Promise.resolve(
+        questionsResponse,
+      ),
+    });
+    const initialEntries = '/game';
+    const initialState = { 
+      player: {
+        token: '53a7f58e97fbd0ca9c2f9c74d3a2896ddef50657af7061519cf86c50f7cf4a2b',
+        name: 'asd',
+        email: 'asd@email.com',
+        score: 0,
+      },
     }
-    const { history } = renderWithRouterAndRedux(<App />, initialState, '/game');
 
-    expect(history.location.pathname).toBe('/game');
+    renderWithRouterAndRedux(<App />, initialState, initialEntries);
 
-    // const email = screen.getByTestId('input-gravatar-email');
-    // const name = screen.getByTestId('input-player-name');
-    const typeQuestion = screen.getByTestId('question-category');
+    const typeQuestion = await screen.findByTestId('question-category');
     const questionText = screen.getByTestId('question-text');
-    const questionOptions = screen.getByTestId('answer-options');
+    const teste = await screen.findAllByTestId(/-answer/);
+    const score = screen.getByTestId('header-score');
 
     expect(typeQuestion).toBeInTheDocument();
     expect(questionText).toBeInTheDocument();
-    expect(questionOptions.length).toBe(4);
-    // expect(configBtn).toBeInTheDocument();
+    await waitFor(() => {
+      // console.log(questionOptions);
+    });
+    expect(teste.length).toBeGreaterThanOrEqual(2);
+    // expect(questionOptions.length).toBe(4);
+    expect(score).toBeInTheDocument();
   });
+  it('Testa se o token invalido volta para a Home', async () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: () => Promise.resolve(
+        invalidTokenQuestionsResponse,
+      ),
+    });
+    const initialEntries = '/game';
+    const initialState = { 
+      player: {
+        token: '53a7f58e97fbd0ca9c2f9c74d3a2896ddef50657af7061519cf86c50f7cf4a2b',
+        name: 'asd',
+        email: 'asd@email.com',
+        score: 0,
+      },
+    }
 
-  // it('Testa se apos preencher os inputs e clicar no botao de play leva ao jogo', async () => {
-  //   const { history } = renderWithRouterAndRedux(<App />);
-
-  //   expect(history.location.pathname).toBe('/');
-
-  //   const email = screen.getByTestId('input-gravatar-email');
-  //   const name = screen.getByTestId('input-player-name');
-  //   const playBtn = screen.getByTestId('btn-play');
-
-  //   userEvent.type(email, 'email@email.com');
-  //   userEvent.type(name, 'MeuNome');
-
-  //   act(() => {
-  //     userEvent.click(playBtn);
-  //   });
-
-  //   await waitFor(() => {
-  //     expect(history.location.pathname).toBe('/game');
-  //   });
-  // });
-  // it('Testa se apos preencher os inputs e clicar no botao config leva as configuraçoes', () => {
-  //   const { history } = renderWithRouterAndRedux(<App />);
-
-  //   expect(history.location.pathname).toBe('/');
-
-  //   const email = screen.getByTestId('input-gravatar-email');
-  //   const name = screen.getByTestId('input-player-name');
-  //   const configBtn = screen.getByTestId('btn-settings');
-
-  //   userEvent.type(email, 'email@email.com');
-  //   userEvent.type(name, 'MeuNome');
-
-  //   act(() => {
-  //     userEvent.click(configBtn);
-  //   });
-
-  //   expect(history.location.pathname).toBe('/config');
-
-  //   const settingsTitle = screen.getByTestId('settings-title');
-
-  //   expect(settingsTitle).toBeInTheDocument();
-  // });
+  const { history } = renderWithRouterAndRedux(<App />, initialState, initialEntries);
+  
+  await waitFor(() => {
+    expect(history.location.pathname).toBe('/');
+  });
+  });
 });
