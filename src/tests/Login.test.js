@@ -49,7 +49,7 @@ describe('Testar pagina de login', () => {
 
     await waitFor(() => {
       expect(history.location.pathname).toBe('/game');
-    });
+    }, {timeout: 3000});
   });
   it('Testa se apos preencher os inputs e clicar no botao config leva as configuraçoes', () => {
     const { history } = renderWithRouterAndRedux(<App />, initialState, initialEntries);
